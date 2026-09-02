@@ -363,6 +363,10 @@ button:active {
     margin-top: 1rem;
 }
 
+.mb-1 {
+    margin-bottom: 1rem;
+}
+
 .chip {
     background: var(--surface-variant);
     color: var(--on-surface-variant);
