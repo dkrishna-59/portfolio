@@ -738,13 +738,36 @@ footer {
 }
 
 /* Animations */
-.reveal {
+.js .reveal {
     opacity: 0;
     transform: translateY(30px);
     transition: opacity 0.8s ease, transform 0.8s var(--spring);
 }
 
 .reveal.active {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+/* Hero Entrance (CSS Only for reliability) */
+.hero-content {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: hero-reveal 1s var(--spring) forwards;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+@keyframes hero-reveal {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Fallback if JS fails */
+.js .reveal.active {
     opacity: 1;
     transform: translateY(0);
 }
