@@ -1,19 +1,84 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Theme Toggle
-    const themeToggle = document.getElementById('theme-toggle');
     const body = document.body;
-    const savedTheme = localStorage.getItem('theme') || 'light';
 
-    body.setAttribute('data-theme', savedTheme);
-    themeToggle.checked = savedTheme === 'dark';
+    // 1. 7-Day Dynamic Theme Engine
+    const THEMES = [
+        { day: 0, id: 'theme-material-you', name: 'Material You' },
+        { day: 1, id: 'theme-bento-grid', name: 'Bento Grid' },
+        { day: 2, id: 'theme-glassmorphism', name: 'Glassmorphism' },
+        { day: 3, id: 'theme-neubrutalism', name: 'Neubrutalism' },
+        { day: 4, id: 'theme-swiss-minimal', name: 'Swiss Minimal' },
+        { day: 5, id: 'theme-claymorphism', name: 'Claymorphism' },
+        { day: 6, id: 'theme-linear-dark', name: 'Linear Dark' }
+    ];
 
-    themeToggle.addEventListener('change', () => {
-        const newTheme = themeToggle.checked ? 'dark' : 'light';
-        body.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
+    const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    const todayIndex = new Date().getDay();
+    let activeDayIndex = todayIndex;
+
+    // Check for manual session override
+    const sessionOverride = sessionStorage.getItem('manualThemeDay');
+    if (sessionOverride !== null && !isNaN(sessionOverride)) {
+        activeDayIndex = parseInt(sessionOverride, 10);
+    }
+
+    function applyDayTheme(dayIndex) {
+        const themeConfig = THEMES[dayIndex];
+
+        body.setAttribute('data-theme', themeConfig.id);
+
+        // Update Dock Info
+        const dayNameEl = document.getElementById('dock-day-name');
+        const themeNameEl = document.getElementById('dock-theme-name');
+        if (dayNameEl) dayNameEl.textContent = `${DAYS[dayIndex]}${dayIndex === todayIndex ? ' (Today)' : ''}`;
+        if (themeNameEl) themeNameEl.textContent = themeConfig.name;
+
+        // Highlight active dock button
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            const btnDay = parseInt(btn.getAttribute('data-day'), 10);
+            if (btnDay === dayIndex) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    }
+
+    applyDayTheme(activeDayIndex);
+
+    // Dock Button Click Handlers
+    document.querySelectorAll('.theme-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const selectedDay = parseInt(btn.getAttribute('data-day'), 10);
+            sessionStorage.setItem('manualThemeDay', selectedDay);
+            applyDayTheme(selectedDay);
+        });
     });
 
-    // 2. Ripple Effect Engine
+    const resetBtn = document.getElementById('theme-reset-btn');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            sessionStorage.removeItem('manualThemeDay');
+            applyDayTheme(todayIndex);
+        });
+    }
+
+    // 2. Light / Dark Mode Toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    const savedMode = localStorage.getItem('colorMode') || 'light';
+
+    body.setAttribute('data-mode', savedMode);
+    if (themeToggle) {
+        themeToggle.checked = savedMode === 'dark';
+        themeToggle.addEventListener('change', () => {
+            const newMode = themeToggle.checked ? 'dark' : 'light';
+            body.setAttribute('data-mode', newMode);
+            localStorage.setItem('colorMode', newMode);
+        });
+    }
+
+    // 3. Ripple Effect Engine
     function createRipple(event) {
         const button = event.currentTarget;
         const circle = document.createElement('span');
@@ -40,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', createRipple);
     });
 
-    // 3. Scroll Reveal Animations
+    // 4. Scroll Reveal Animations
     const reveals = document.querySelectorAll('.reveal');
     const revealObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry, index) => {
@@ -54,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     reveals.forEach(reveal => revealObserver.observe(reveal));
 
-    // 4. 3D Card Tilt Effect
+    // 5. 3D Card Tilt Effect
     const tiltCards = document.querySelectorAll('.tilt');
     tiltCards.forEach(card => {
         card.addEventListener('mousemove', (e) => {
@@ -76,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 5. Scroll-Spy Navigation
+    // 6. Scroll-Spy Navigation
     const navLinks = document.querySelectorAll('.nav-links a');
     const sections = document.querySelectorAll('section');
 
@@ -86,7 +151,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
-            const sectionHeight = section.clientHeight;
             if (scrollY >= (sectionTop - 250)) {
                 current = section.getAttribute('id');
             }
@@ -100,15 +164,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 6. Footer Dynamic Year
-    document.getElementById('year').textContent = new Date().getFullYear();
+    // 7. Footer Dynamic Year
+    const yearEl = document.getElementById('year');
+    if (yearEl) {
+        yearEl.textContent = new Date().getFullYear();
+    }
 
-    // 7. Contact Form Handling (Prevent reload)
+    // 8. Contact Form Handling
     const contactForm = document.querySelector('.contact-form');
     if (contactForm) {
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            alert('Thanks for your message, Krishna will get back to you soon!');
+            alert('Thanks for your message, Krishnarasu will get back to you soon!');
             contactForm.reset();
         });
     }
