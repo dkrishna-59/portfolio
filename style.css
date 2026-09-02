@@ -323,9 +323,10 @@ button:active {
     transition: var(--transition);
 }
 
-.social-pill img {
+.social-pill img, .social-pill svg {
     width: 18px;
     height: 18px;
+    display: block;
 }
 
 .social-pill:hover {
