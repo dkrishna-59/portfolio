@@ -3,66 +3,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 1. 7-Day Dynamic Theme Engine
     const THEMES = [
-        { day: 0, id: 'theme-material-you', name: 'Material You' },
-        { day: 1, id: 'theme-bento-grid', name: 'Bento Grid' },
-        { day: 2, id: 'theme-glassmorphism', name: 'Glassmorphism' },
-        { day: 3, id: 'theme-neubrutalism', name: 'Neubrutalism' },
-        { day: 4, id: 'theme-swiss-minimal', name: 'Swiss Minimal' },
-        { day: 5, id: 'theme-claymorphism', name: 'Claymorphism' },
-        { day: 6, id: 'theme-linear-dark', name: 'Linear Dark' }
+        { day: 0, id: 'theme-material-you' },
+        { day: 1, id: 'theme-bento-grid' },
+        { day: 2, id: 'theme-glassmorphism' },
+        { day: 3, id: 'theme-neubrutalism' },
+        { day: 4, id: 'theme-swiss-minimal' },
+        { day: 5, id: 'theme-claymorphism' },
+        { day: 6, id: 'theme-linear-dark' }
     ];
 
-    const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
     const todayIndex = new Date().getDay();
-    let activeDayIndex = todayIndex;
-
-    // Check for manual session override
-    const sessionOverride = sessionStorage.getItem('manualThemeDay');
-    if (sessionOverride !== null && !isNaN(sessionOverride)) {
-        activeDayIndex = parseInt(sessionOverride, 10);
-    }
-
-    function applyDayTheme(dayIndex) {
-        const themeConfig = THEMES[dayIndex];
-
-        body.setAttribute('data-theme', themeConfig.id);
-
-        // Update Dock Info
-        const dayNameEl = document.getElementById('dock-day-name');
-        const themeNameEl = document.getElementById('dock-theme-name');
-        if (dayNameEl) dayNameEl.textContent = `${DAYS[dayIndex]}${dayIndex === todayIndex ? ' (Today)' : ''}`;
-        if (themeNameEl) themeNameEl.textContent = themeConfig.name;
-
-        // Highlight active dock button
-        document.querySelectorAll('.theme-btn').forEach(btn => {
-            const btnDay = parseInt(btn.getAttribute('data-day'), 10);
-            if (btnDay === dayIndex) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
-            }
-        });
-    }
-
-    applyDayTheme(activeDayIndex);
-
-    // Dock Button Click Handlers
-    document.querySelectorAll('.theme-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const selectedDay = parseInt(btn.getAttribute('data-day'), 10);
-            sessionStorage.setItem('manualThemeDay', selectedDay);
-            applyDayTheme(selectedDay);
-        });
-    });
-
-    const resetBtn = document.getElementById('theme-reset-btn');
-    if (resetBtn) {
-        resetBtn.addEventListener('click', () => {
-            sessionStorage.removeItem('manualThemeDay');
-            applyDayTheme(todayIndex);
-        });
-    }
+    const currentTheme = THEMES[todayIndex] || THEMES[0];
+    body.setAttribute('data-theme', currentTheme.id);
 
     // 2. Light / Dark Mode Toggle
     const themeToggle = document.getElementById('theme-toggle');
