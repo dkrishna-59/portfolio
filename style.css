@@ -136,6 +136,12 @@ h1, h2, h3 {
     font-size: 1.2rem;
     color: var(--primary);
     white-space: nowrap;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.logo:hover {
+    transform: scale(1.05);
 }
 
 .nav-links {
@@ -218,13 +224,13 @@ input:checked + .slider:before {
 
 /* Hero */
 .hero-section {
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 0 2rem;
+    padding: 6rem 2rem 2rem;
 }
 
 .pill-badge {
