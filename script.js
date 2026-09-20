@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         htmlEl.setAttribute('data-theme', defaultTheme.id);
     }
 
-    // 2. Safe Ripple Effect Engine
+    // 2. Ultra-Robust Ripple Effect Engine with Auto-Cleanup
     function createRipple(event) {
         const button = event.currentTarget;
         if (!button) return;
@@ -32,15 +32,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const radius = diameter / 2;
         const rect = button.getBoundingClientRect();
 
+        const clientX = event.clientX !== undefined ? event.clientX : (rect.left + rect.width / 2);
+        const clientY = event.clientY !== undefined ? event.clientY : (rect.top + rect.height / 2);
+
         circle.style.width = circle.style.height = `${diameter}px`;
-        circle.style.left = `${event.clientX - rect.left - radius}px`;
-        circle.style.top = `${event.clientY - rect.top - radius}px`;
+        circle.style.left = `${clientX - rect.left - radius}px`;
+        circle.style.top = `${clientY - rect.top - radius}px`;
         circle.classList.add('ripple-circle');
 
+        // Remove previous ripple if any
         const existingRipple = button.getElementsByClassName('ripple-circle')[0];
         if (existingRipple) {
             existingRipple.remove();
         }
+
+        circle.addEventListener('animationend', () => {
+            circle.remove();
+        });
 
         button.appendChild(circle);
     }
@@ -51,24 +59,32 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', createRipple);
     });
 
-    // 3. Scroll Reveal Animations
-    const observerOptions = { threshold: 0.1 };
-    const revealObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry, index) => {
-            if (entry.isIntersecting) {
-                setTimeout(() => {
-                    entry.target.classList.add('active');
-                }, index * 80);
-            }
+    // 3. Scroll Reveal Animations (Safe Intersection Observer)
+    try {
+        const observerOptions = { threshold: 0.1 };
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry && entry.isIntersecting && entry.target) {
+                    setTimeout(() => {
+                        entry.target.classList.add('active');
+                    }, index * 80);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.section').forEach(section => {
+            if (section) revealObserver.observe(section);
         });
-    }, observerOptions);
+    } catch (err) {
+        // Fallback if IntersectionObserver fails
+        document.querySelectorAll('.section').forEach(section => {
+            if (section) section.classList.add('active');
+        });
+    }
 
-    document.querySelectorAll('.section').forEach(section => {
-        revealObserver.observe(section);
-    });
-
-    // 4. 3D Card Tilt Effect
+    // 4. 3D Card Tilt Effect (Pointer Safe)
     document.querySelectorAll('.tilt').forEach(card => {
+        if (!card) return;
         card.addEventListener('mousemove', (e) => {
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left;
@@ -98,6 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const scrollY = window.pageYOffset || document.documentElement.scrollTop;
 
             sections.forEach(section => {
+                if (!section) return;
                 const sectionTop = section.offsetTop;
                 if (scrollY >= (sectionTop - 250)) {
                     current = section.getAttribute('id');
@@ -105,6 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             navLinks.forEach(link => {
+                if (!link) return;
                 link.classList.remove('active');
                 const href = link.getAttribute('href');
                 if (href && href.includes(current)) {
