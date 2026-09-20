@@ -1,36 +1,54 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const body = document.body;
+    const htmlEl = document.documentElement;
 
-    // 1. 7-Day Dynamic Theme Engine
+    // 1. 7-Day Dynamic Theme Engine Mapping
     const THEMES = [
-        { day: 0, id: 'theme-material-you' },
-        { day: 1, id: 'theme-bento-grid' },
-        { day: 2, id: 'theme-glassmorphism' },
-        { day: 3, id: 'theme-neubrutalism' },
-        { day: 4, id: 'theme-swiss-minimal' },
-        { day: 5, id: 'theme-claymorphism' },
-        { day: 6, id: 'theme-linear-dark' }
+        { day: 0, id: 'material-you', name: 'Sunday: Material You (M3)' },
+        { day: 1, id: 'bento', name: 'Monday: Bento Grid' },
+        { day: 2, id: 'glassmorphism', name: 'Tuesday: Glassmorphism' },
+        { day: 3, id: 'neubrutalism', name: 'Wednesday: Neubrutalism' },
+        { day: 4, id: 'swiss-minimal', name: 'Thursday: Swiss Minimal' },
+        { day: 5, id: 'claymorphism', name: 'Friday: Claymorphism' },
+        { day: 6, id: 'linear-dark', name: 'Saturday: Linear Dark' }
     ];
 
     const todayIndex = new Date().getDay();
-    const currentTheme = THEMES[todayIndex] || THEMES[0];
-    body.setAttribute('data-theme', currentTheme.id);
+    const defaultTheme = THEMES[todayIndex] || THEMES[0];
 
-    // 2. Light / Dark Mode Toggle
-    const themeToggle = document.getElementById('theme-toggle');
-    const savedMode = localStorage.getItem('colorMode') || 'light';
+    // Check if user previously selected a theme manually
+    const savedTheme = localStorage.getItem('selectedTheme') || defaultTheme.id;
+    setTheme(savedTheme);
 
-    body.setAttribute('data-mode', savedMode);
-    if (themeToggle) {
-        themeToggle.checked = savedMode === 'dark';
-        themeToggle.addEventListener('change', () => {
-            const newMode = themeToggle.checked ? 'dark' : 'light';
-            body.setAttribute('data-mode', newMode);
-            localStorage.setItem('colorMode', newMode);
+    function setTheme(themeId) {
+        htmlEl.setAttribute('data-theme', themeId);
+        localStorage.setItem('selectedTheme', themeId);
+
+        // Update indicator name
+        const activeThemeObj = THEMES.find(t => t.id === themeId) || defaultTheme;
+        const themeNameDisplay = document.getElementById('theme-name-display');
+        if (themeNameDisplay) {
+            themeNameDisplay.textContent = activeThemeObj.name.split(': ')[1] || activeThemeObj.name;
+        }
+
+        // Update HUD buttons active state
+        document.querySelectorAll('.theme-pill').forEach(pill => {
+            if (pill.getAttribute('data-theme-target') === themeId) {
+                pill.classList.add('active');
+            } else {
+                pill.classList.remove('active');
+            }
         });
     }
 
-    // 3. Ripple Effect Engine
+    // Hook up HUD switcher buttons
+    document.querySelectorAll('.theme-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+            const targetTheme = pill.getAttribute('data-theme-target');
+            setTheme(targetTheme);
+        });
+    });
+
+    // 2. Ripple Effect Engine
     function createRipple(event) {
         const button = event.currentTarget;
         const circle = document.createElement('span');
@@ -42,38 +60,38 @@ document.addEventListener('DOMContentLoaded', () => {
         circle.style.top = `${event.clientY - button.getBoundingClientRect().top - radius}px`;
         circle.classList.add('ripple-circle');
 
-        const ripple = button.getElementsByClassName('ripple-circle')[0];
-        if (ripple) {
-            ripple.remove();
+        const existingRipple = button.getElementsByClassName('ripple-circle')[0];
+        if (existingRipple) {
+            existingRipple.remove();
         }
 
         button.appendChild(circle);
     }
 
-    const rippleButtons = document.querySelectorAll('.ripple');
-    rippleButtons.forEach(btn => {
+    document.querySelectorAll('.ripple').forEach(btn => {
         btn.style.position = 'relative';
         btn.style.overflow = 'hidden';
         btn.addEventListener('click', createRipple);
     });
 
-    // 4. Scroll Reveal Animations
-    const reveals = document.querySelectorAll('.reveal');
+    // 3. Scroll Reveal Animations
+    const observerOptions = { threshold: 0.1 };
     const revealObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry, index) => {
             if (entry.isIntersecting) {
                 setTimeout(() => {
                     entry.target.classList.add('active');
-                }, index * 100);
+                }, index * 80);
             }
         });
-    }, { threshold: 0.1 });
+    }, observerOptions);
 
-    reveals.forEach(reveal => revealObserver.observe(reveal));
+    document.querySelectorAll('.section').forEach(section => {
+        revealObserver.observe(section);
+    });
 
-    // 5. 3D Card Tilt Effect
-    const tiltCards = document.querySelectorAll('.tilt');
-    tiltCards.forEach(card => {
+    // 4. 3D Card Tilt Effect
+    document.querySelectorAll('.tilt').forEach(card => {
         card.addEventListener('mousemove', (e) => {
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left;
@@ -82,10 +100,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
 
-            const rotateX = ((y - centerY) / centerY) * 10;
-            const rotateY = ((centerX - x) / centerX) * 10;
+            const rotateX = ((y - centerY) / centerY) * 6;
+            const rotateY = ((centerX - x) / centerX) * 6;
 
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.01, 1.01, 1.01)`;
         });
 
         card.addEventListener('mouseleave', () => {
@@ -93,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 6. Scroll-Spy Navigation
+    // 5. Scroll-Spy Navigation
     const navLinks = document.querySelectorAll('.nav-links a');
     const sections = document.querySelectorAll('section');
 
@@ -116,18 +134,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 7. Footer Dynamic Year
+    // 6. Footer Dynamic Year
     const yearEl = document.getElementById('year');
     if (yearEl) {
         yearEl.textContent = new Date().getFullYear();
     }
 
-    // 8. Contact Form Handling
+    // 7. Contact Form Handling
     const contactForm = document.querySelector('.contact-form');
     if (contactForm) {
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            alert('Thanks for your message, Krishnarasu will get back to you soon!');
+            alert('Thank you for reaching out! Krishna will get back to you shortly.');
             contactForm.reset();
         });
     }
