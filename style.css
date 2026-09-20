@@ -1,5 +1,5 @@
 /* ==========================================
-   7-Day 7-UI Theme Engine & Global Styles
+   7-Day 7-UI Theme Engine (Backend) & Global Styles
    ========================================== */
 
 :root {
@@ -217,24 +217,6 @@ h1, h2, h3, h4 {
 
 .nav-links a:hover,
 .nav-links a.active {
-    color: var(--primary);
-}
-
-.theme-indicator-pill {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: var(--surface-variant);
-    color: var(--on-surface-variant);
-    padding: 0.4rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 500;
-    border: var(--border);
-}
-
-.theme-indicator-pill span.material-symbols-outlined {
-    font-size: 18px;
     color: var(--primary);
 }
 
@@ -757,66 +739,6 @@ footer {
 }
 
 /* ==========================================
-   Floating 7-Day UI HUD
-   ========================================== */
-.theme-hud {
-    position: fixed;
-    bottom: 1.5rem;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1000;
-    background: var(--surface);
-    border: var(--border);
-    border-radius: var(--radius);
-    padding: 0.6rem 1rem;
-    box-shadow: var(--card-shadow);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-    backdrop-filter: blur(20px);
-}
-
-.hud-header {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--primary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.hud-header span.material-symbols-outlined {
-    font-size: 16px;
-}
-
-.hud-switcher {
-    display: flex;
-    gap: 0.35rem;
-}
-
-.theme-pill {
-    background: var(--surface-variant);
-    color: var(--on-surface-variant);
-    border: var(--border);
-    border-radius: 20px;
-    padding: 0.3rem 0.65rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.theme-pill:hover,
-.theme-pill.active {
-    background: var(--primary);
-    color: var(--on-primary);
-    transform: scale(1.05);
-}
-
-/* ==========================================
    Responsive Design
    ========================================== */
 @media (max-width: 900px) {
@@ -831,12 +753,5 @@ footer {
 
     .floating-nav {
         width: 95%;
-    }
-}
-
-@media (max-width: 600px) {
-    .hud-switcher {
-        flex-wrap: wrap;
-        justify-content: center;
     }
 }

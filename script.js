@@ -1,52 +1,23 @@
 document.addEventListener('DOMContentLoaded', () => {
     const htmlEl = document.documentElement;
 
-    // 1. 7-Day Dynamic Theme Engine Mapping
+    // 1. 7-Day Dynamic Theme Engine (Backend Logic)
     const THEMES = [
-        { day: 0, id: 'material-you', name: 'Sunday: Material You (M3)' },
-        { day: 1, id: 'bento', name: 'Monday: Bento Grid' },
-        { day: 2, id: 'glassmorphism', name: 'Tuesday: Glassmorphism' },
-        { day: 3, id: 'neubrutalism', name: 'Wednesday: Neubrutalism' },
-        { day: 4, id: 'swiss-minimal', name: 'Thursday: Swiss Minimal' },
-        { day: 5, id: 'claymorphism', name: 'Friday: Claymorphism' },
-        { day: 6, id: 'linear-dark', name: 'Saturday: Linear Dark' }
+        { day: 0, id: 'material-you' },    // Sunday
+        { day: 1, id: 'bento' },          // Monday
+        { day: 2, id: 'glassmorphism' },  // Tuesday
+        { day: 3, id: 'neubrutalism' },   // Wednesday
+        { day: 4, id: 'swiss-minimal' },  // Thursday
+        { day: 5, id: 'claymorphism' },   // Friday
+        { day: 6, id: 'linear-dark' }     // Saturday
     ];
 
     const todayIndex = new Date().getDay();
     const defaultTheme = THEMES[todayIndex] || THEMES[0];
 
-    // Check if user previously selected a theme manually
-    const savedTheme = localStorage.getItem('selectedTheme') || defaultTheme.id;
-    setTheme(savedTheme);
-
-    function setTheme(themeId) {
-        htmlEl.setAttribute('data-theme', themeId);
-        localStorage.setItem('selectedTheme', themeId);
-
-        // Update indicator name
-        const activeThemeObj = THEMES.find(t => t.id === themeId) || defaultTheme;
-        const themeNameDisplay = document.getElementById('theme-name-display');
-        if (themeNameDisplay) {
-            themeNameDisplay.textContent = activeThemeObj.name.split(': ')[1] || activeThemeObj.name;
-        }
-
-        // Update HUD buttons active state
-        document.querySelectorAll('.theme-pill').forEach(pill => {
-            if (pill.getAttribute('data-theme-target') === themeId) {
-                pill.classList.add('active');
-            } else {
-                pill.classList.remove('active');
-            }
-        });
-    }
-
-    // Hook up HUD switcher buttons
-    document.querySelectorAll('.theme-pill').forEach(pill => {
-        pill.addEventListener('click', () => {
-            const targetTheme = pill.getAttribute('data-theme-target');
-            setTheme(targetTheme);
-        });
-    });
+    // Apply theme based on day of week or stored preference
+    const activeThemeId = localStorage.getItem('selectedTheme') || defaultTheme.id;
+    htmlEl.setAttribute('data-theme', activeThemeId);
 
     // 2. Ripple Effect Engine
     function createRipple(event) {
