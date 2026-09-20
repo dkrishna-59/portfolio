@@ -15,20 +15,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const todayIndex = new Date().getDay();
     const defaultTheme = THEMES[todayIndex] || THEMES[0];
 
-    // Apply theme based on day of week or stored preference
-    const activeThemeId = localStorage.getItem('selectedTheme') || defaultTheme.id;
-    htmlEl.setAttribute('data-theme', activeThemeId);
+    try {
+        const activeThemeId = localStorage.getItem('selectedTheme') || defaultTheme.id;
+        htmlEl.setAttribute('data-theme', activeThemeId);
+    } catch (e) {
+        htmlEl.setAttribute('data-theme', defaultTheme.id);
+    }
 
-    // 2. Ripple Effect Engine
+    // 2. Safe Ripple Effect Engine
     function createRipple(event) {
         const button = event.currentTarget;
+        if (!button) return;
+
         const circle = document.createElement('span');
         const diameter = Math.max(button.clientWidth, button.clientHeight);
         const radius = diameter / 2;
+        const rect = button.getBoundingClientRect();
 
         circle.style.width = circle.style.height = `${diameter}px`;
-        circle.style.left = `${event.clientX - button.getBoundingClientRect().left - radius}px`;
-        circle.style.top = `${event.clientY - button.getBoundingClientRect().top - radius}px`;
+        circle.style.left = `${event.clientX - rect.left - radius}px`;
+        circle.style.top = `${event.clientY - rect.top - radius}px`;
         circle.classList.add('ripple-circle');
 
         const existingRipple = button.getElementsByClassName('ripple-circle')[0];
@@ -86,24 +92,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const navLinks = document.querySelectorAll('.nav-links a');
     const sections = document.querySelectorAll('section');
 
-    window.addEventListener('scroll', () => {
-        let current = '';
-        const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+    if (navLinks.length > 0 && sections.length > 0) {
+        window.addEventListener('scroll', () => {
+            let current = '';
+            const scrollY = window.pageYOffset || document.documentElement.scrollTop;
 
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            if (scrollY >= (sectionTop - 250)) {
-                current = section.getAttribute('id');
-            }
-        });
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= (sectionTop - 250)) {
+                    current = section.getAttribute('id');
+                }
+            });
 
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href').includes(current)) {
-                link.classList.add('active');
-            }
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                const href = link.getAttribute('href');
+                if (href && href.includes(current)) {
+                    link.classList.add('active');
+                }
+            });
         });
-    });
+    }
 
     // 6. Footer Dynamic Year
     const yearEl = document.getElementById('year');
@@ -116,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (contactForm) {
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            alert('Thank you for reaching out! Krishna will get back to you shortly.');
+            alert('Thank you for reaching out! Krishnarasu D will get back to you shortly.');
             contactForm.reset();
         });
     }
