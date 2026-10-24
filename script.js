@@ -40,7 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
         circle.style.top = `${clientY - rect.top - radius}px`;
         circle.classList.add('ripple-circle');
 
-        // Remove previous ripple if any
         const existingRipple = button.getElementsByClassName('ripple-circle')[0];
         if (existingRipple) {
             existingRipple.remove();
@@ -59,15 +58,14 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', createRipple);
     });
 
-    // 3. Scroll Reveal Animations (Safe Intersection Observer)
+    // 3. Scroll Reveal Animations (Triggers once via observer.unobserve)
     try {
         const observerOptions = { threshold: 0.1 };
-        const revealObserver = new IntersectionObserver((entries) => {
-            entries.forEach((entry, index) => {
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach((entry) => {
                 if (entry && entry.isIntersecting && entry.target) {
-                    setTimeout(() => {
-                        entry.target.classList.add('active');
-                    }, index * 80);
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); // Run once, no re-injection
                 }
             });
         }, observerOptions);
@@ -76,7 +74,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (section) revealObserver.observe(section);
         });
     } catch (err) {
-        // Fallback if IntersectionObserver fails
         document.querySelectorAll('.section').forEach(section => {
             if (section) section.classList.add('active');
         });

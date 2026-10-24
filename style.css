@@ -53,7 +53,7 @@
     --on-primary-container: #a5f3fc;
     --background: #0f172a;
     --on-background: #f8fafc;
-    --surface: rgba(30, 41, 59, 0.65);
+    --surface: rgba(30, 41, 59, 0.75);
     --on-surface: #f8fafc;
     --surface-variant: rgba(51, 65, 85, 0.5);
     --on-surface-variant: #cbd5e1;
@@ -162,27 +162,40 @@ body {
     overflow-x: hidden;
 }
 
-h1, h2, h3, h4 {
+/* Headings: Clean relative positioning, no ghost layers, proper spacing */
+h1, h2, h3, h4, .hero-title, .section-title {
+    position: relative;
     font-family: 'Inter', sans-serif;
     font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+}
+
+h1::before, h1::after,
+h2::before, h2::after,
+h3::before, h3::after,
+.section-title::before, .section-title::after {
+    content: none !important;
 }
 
 /* ==========================================
-   Navigation
+   Top Navigation (.floating-nav / nav)
    ========================================== */
 .floating-nav {
     position: fixed;
-    top: 1.5rem;
+    top: 16px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 1000;
+    z-index: 9999;
     width: 90%;
     max-width: 900px;
+    white-space: nowrap;
 }
 
 .nav-pill {
     background: var(--surface);
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border: var(--border);
     border-radius: var(--radius);
     padding: 0.75rem 1.5rem;
@@ -191,6 +204,7 @@ h1, h2, h3, h4 {
     justify-content: space-between;
     box-shadow: var(--card-shadow);
     transition: var(--transition);
+    white-space: nowrap;
 }
 
 .logo {
@@ -199,12 +213,14 @@ h1, h2, h3, h4 {
     color: var(--primary);
     text-decoration: none;
     letter-spacing: -0.5px;
+    white-space: nowrap;
 }
 
 .nav-links {
     list-style: none;
     display: flex;
     gap: 1.5rem;
+    white-space: nowrap;
 }
 
 .nav-links a {
@@ -213,6 +229,7 @@ h1, h2, h3, h4 {
     font-weight: 500;
     font-size: 0.95rem;
     transition: color 0.3s ease;
+    white-space: nowrap;
 }
 
 .nav-links a:hover,
@@ -224,9 +241,11 @@ h1, h2, h3, h4 {
    Layout Sections
    ========================================== */
 .section {
-    padding: 7rem 2rem 4rem 2rem;
+    position: relative;
+    width: 100%;
     max-width: 1200px;
     margin: 0 auto;
+    padding: 80px 2rem;
 }
 
 .section-title {
@@ -240,11 +259,13 @@ h1, h2, h3, h4 {
    Hero Section
    ========================================== */
 .hero-section {
+    position: relative;
+    width: 100%;
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 8rem 2rem 4rem 2rem;
+    padding: 100px 2rem 60px 2rem;
     text-align: center;
 }
 
@@ -285,8 +306,9 @@ h1, h2, h3, h4 {
 
 .headline {
     font-size: clamp(2.5rem, 6vw, 4.5rem);
-    line-height: 1.1;
+    line-height: 1.2;
     letter-spacing: -1.5px;
+    margin-bottom: 0.5rem;
 }
 
 .accent {
@@ -297,6 +319,7 @@ h1, h2, h3, h4 {
     font-size: clamp(1.2rem, 2.5vw, 1.6rem);
     font-weight: 600;
     color: var(--on-surface-variant);
+    margin-bottom: 0.5rem;
 }
 
 .bio {
@@ -304,12 +327,13 @@ h1, h2, h3, h4 {
     color: var(--on-surface-variant);
     max-width: 650px;
     line-height: 1.7;
+    margin-bottom: 1rem;
 }
 
 .cta-group {
     display: flex;
     gap: 1rem;
-    margin-top: 1rem;
+    margin-top: 0.5rem;
 }
 
 /* ==========================================
@@ -376,7 +400,7 @@ h1, h2, h3, h4 {
     flex-wrap: wrap;
     gap: 0.75rem;
     justify-content: center;
-    margin-top: 1.5rem;
+    margin-top: 1rem;
 }
 
 .social-pill {
@@ -441,6 +465,7 @@ h1, h2, h3, h4 {
 .card-header h3 {
     font-size: 1.25rem;
     color: var(--on-surface);
+    margin-bottom: 0;
 }
 
 .card-icon {
@@ -478,11 +503,13 @@ h1, h2, h3, h4 {
 .bento-highlight h4 {
     font-size: 1rem;
     color: var(--on-surface);
+    margin-bottom: 0.25rem;
 }
 
 .bento-highlight p {
     font-size: 0.85rem;
     color: var(--on-surface-variant);
+    margin-bottom: 0;
 }
 
 /* Education Section */
@@ -583,6 +610,10 @@ h1, h2, h3, h4 {
     color: var(--primary);
 }
 
+.skill-header h3 {
+    margin-bottom: 0;
+}
+
 .skill-tags {
     display: flex;
     flex-wrap: wrap;
@@ -606,6 +637,7 @@ h1, h2, h3, h4 {
 .project-top h3 {
     font-size: 1.3rem;
     margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .project-badge {
@@ -623,6 +655,7 @@ h1, h2, h3, h4 {
     color: var(--on-surface-variant);
     font-size: 0.95rem;
     line-height: 1.6;
+    margin-bottom: 0.5rem;
 }
 
 .project-actions {
