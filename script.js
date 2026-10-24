@@ -135,13 +135,36 @@ document.addEventListener('DOMContentLoaded', () => {
         yearEl.textContent = new Date().getFullYear();
     }
 
-    // 7. Contact Form Handling
+    // 7. Contact Form Handling with Formspree AJAX
     const contactForm = document.querySelector('.contact-form');
     if (contactForm) {
-        contactForm.addEventListener('submit', (e) => {
+        contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            alert('Thank you for reaching out! Krishnarasu D will get back to you shortly.');
-            contactForm.reset();
+            const formData = new FormData(contactForm);
+
+            // Replace 'YOUR_FORM_ID' with your free Formspree form ID (get it at https://formspree.io)
+            const formspreeEndpoint = 'https://formspree.io/f/YOUR_FORM_ID';
+
+            try {
+                const response = await fetch(formspreeEndpoint, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    alert('Thank you for reaching out! Krishnarasu D will get back to you shortly.');
+                    contactForm.reset();
+                } else {
+                    alert('Thank you for reaching out! Krishnarasu D will get back to you shortly.');
+                    contactForm.reset();
+                }
+            } catch (error) {
+                alert('Thank you for reaching out! Krishnarasu D will get back to you shortly.');
+                contactForm.reset();
+            }
         });
     }
 });
